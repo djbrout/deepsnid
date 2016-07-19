@@ -1,5 +1,7 @@
 import os
 import matplotlib as m
+import multiprocessing as mp
+
 
 m.use('Agg')
 import matplotlib.pyplot as plt
@@ -7,7 +9,6 @@ import numpy as np
 
 np.set_printoptions(threshold=np.nan)
 import sys
-import dilltools as dt
 import sncosmo
 import bazin
 
@@ -294,6 +295,57 @@ def lcfit(lightcurves,params,fitparams,truearray,sources):
 
 
     return fitparams, truetypes
+
+
+
+# START MULTIPROCESSING TECHNOLOGY
+def mapVoxelization(gal_zed,voxel_limits_z,unique_pix,pix,numprocessors=2,verbose=False):
+    if verbose: print 'Mapping voxelization. Number of processors available is :',numprocessors
+    indices = range(unique_pix.size)
+    voxelcounts = []
+    voxelmeans = []
+
+    voxelated_gals = dict()
+    voxelated_gals["pixels"] = unique_pix
+
+    index = 0
+    keeplooping = True
+
+    while keeplooping:
+        output = mp.Queue()
+        ileft = np.min([unique_pix.size-index,numprocessors])
+        processes = [mp.Process(target=maploop, args=(x, gal_zed,voxel_limits_z,unique_pix,pix, output)) for x in range(index,index+ileft)]
+        for p in processes:
+            p.start()
+        for p in processes:
+            p.join(1)
+
+        for x in range(index,index+ileft):
+            i,vc,vm = output.get()
+            upix = unique_pix[i]
+            voxelated_gals[upix] = vc
+            voxelated_gals[upix,"mean_z"] = vm
+
+        index += ileft
+        if index > unique_pix.size-2:
+            keeplooping = False
+
+    return voxelated_gals
+
+def maploop(i,gal_zed, voxel_limits_z, unique_pix, pix, output,verbose=False) :
+    if verbose: print 'running loop ',i
+
+    upix = unique_pix[i]
+    ix = upix == pix
+    voxels = np.zeros(voxel_limits_z.shape[0])
+    voxelmeans = np.zeros(voxel_limits_z.shape[0])
+    for j in range(0,voxel_limits_z.shape[0]):
+        zed_1,zed_2 = voxel_limits_z[j]
+        ix2 = (gal_zed[ix] >= zed_1) & (gal_zed[ix] < zed_2)
+        voxels[j] = (gal_zed[ix][ix2]).size
+        if voxels[j] > 0 :
+            voxelmeans[j] = (gal_zed[ix][ix2]).mean()
+    output.put((i, voxels,voxelmeans))
 
 
 
