@@ -1,5 +1,6 @@
 from theano import tensor
 import numpy as np
+from time import time
 
 x = tensor.matrix('features')
 
@@ -100,21 +101,22 @@ from blocks.main_loop import MainLoop
 from blocks.extensions import FinishAfter, Printing
 from blocks_extras.extensions.plot import Plot
 from blocks_extras.extensions.predict import PredictDataStream
-
+t1 = time()
 dobokeh = False
 if not dobokeh:
     main_loop = MainLoop(data_stream=data_stream, algorithm=algorithm,
-                     extensions=[monitor,monitor2,monitor3,monitor4, FinishAfter(after_n_epochs=50000), Printing()])
+                     extensions=[monitor,monitor2,monitor3,monitor4, FinishAfter(after_n_epochs=5000), Printing()])
 else:    # bokeh-server
     main_loop = MainLoop(data_stream=data_stream, algorithm=algorithm,
                      extensions=[FinishAfter(after_n_epochs=20000), TrainingDataMonitoring([cost,error_rate], after_batch=True),
                                  Plot('Classifier', channels=[['cost_with_regularization'],['error_rate']], after_batch=True)])
 
 main_loop.run()
-
-np.savez('sncc_results.npz',main_loop=main_loop)
+t2=time()
+print 'Total runtime for 500 iter',t2-t1
+np.savez('/home/djbrout/deepsnid/results/sncc_results.npz',main_loop=main_loop)
 #dlplots.hinton(W1.eval())
-plt.savefig('W1_after.png')
+#plt.savefig('W1_after.png')
 
 #print(monitor.data_stream)
 #print(probs.__di)
