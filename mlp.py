@@ -49,10 +49,10 @@ from fuel.transformers import Flatten
 
 
 from fuel.datasets.hdf5 import H5PYDataset
-train_set = H5PYDataset('ddl_sncc_known.hdf5', which_sets=('train',))
-test_set = H5PYDataset('ddl_sncc_known.hdf5', which_sets=('test',))
-testia_set = H5PYDataset('ddl_sncc_known.hdf5', which_sets=('test_ia',))
-testnonia_set = H5PYDataset('ddl_sncc_known.hdf5', which_sets=('test_nonia',))
+train_set = H5PYDataset('./fueldata/ddl_sncc_known.hdf5', which_sets=('train',))
+test_set = H5PYDataset('./fueldata/ddl_sncc_known.hdf5', which_sets=('test',))
+testia_set = H5PYDataset('./fueldata/ddl_sncc_known.hdf5', which_sets=('test_ia',))
+testnonia_set = H5PYDataset('./fueldata/ddl_sncc_known.hdf5', which_sets=('test_nonia',))
 
 data_stream = Flatten(DataStream.default_stream(train_set,
                                                 iteration_scheme=SequentialScheme(700, batch_size=50)))
