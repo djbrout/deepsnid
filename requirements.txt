@@ -2,3 +2,5 @@ fuel
 git+git://github.com/mila-udem/blocks.git
 git+git://github.com/mila-udem/blocks-extras.git
 sncosmo
+lmfit
+iminuit

@@ -41,7 +41,7 @@ def bindata(x, y, bins, returnn=False):
 #
 # By Dillon Brout
 # dbrout@physics.upenn.edu
-def read(filename, headline, startline, delim=' '):
+def read(filename, headline, startline, delim=None):
     linenum = 0
     go = 0
     column_list = []
