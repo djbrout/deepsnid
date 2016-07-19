@@ -15,7 +15,7 @@ import dilltools as dt
 
 #SALT AND BAZIN MUST BE THE FIRST TWO SOURCES AND ONLY IF THEY WORK WILL THE REST OF THE SOURCES BE FIT!
 sources = [    'salt2','bazin', 's11-2004hx', 's11-2005lc', 's11-2005hl', 's11-2005hm',
-               's11-2005gi', 's11-2006fo', 's11-2006jl', 'hsiao', 'hsiao-subsampled', 'snf-2011fe', 'snf-2011fe',
+               's11-2005gi', 's11-2006fo', 's11-2006jl', 'hsiao', 'snf-2011fe',
                'snana-2004gq', 'snana-sdss004012', 'snana-2006fo', 'snana-sdss014475', 'snana-2006lc', 'snana-2007ms',
                'snana-04d1la', 'snana-04d4jv', 'snana-2004gv', 'snana-2006ep', 'snana-2007y', 'snana-2004ib',
                'snana-2005hm', 'snana-2006jo', 'snana-2007nc', 'snana-2004hx', 'snana-2005gi', 'snana-2006gq',
@@ -143,7 +143,7 @@ def grabdata(loc,list,simname='test'):
             knownparams.append(p)
             knowntypes.append(t)
 
-    ndim = 1 + 1 + 1 + len(sources) + 2
+    ndim = 1 + 1 + 1 + len(sources) + 2 + 5 + 12
     fitparams = np.zeros((len(knownlightcurves), ndim)) #THIS NEEDS TO CUT OUT -9S
 
     fitparams, truetypes = lcfit(knownlightcurves, knownparams, fitparams, knowntypes, sources)
@@ -208,7 +208,7 @@ def lcfit(lightcurves,params,fitparams,truearray,sources):
                     #     print('could not fit Type Ia')
                     #     sys.exit()
                     print('fitting failed: SN Type ',truearray[i])
-                    fitparams[i, :4] = np.array([0., 0., 0., 500.])
+                    fitparams[i, :4] = np.array([-999., -999., -999., -999.])
                     print('-'*100)
                     if truearray[i] == 0:
                         iafailed += 1.
@@ -222,7 +222,7 @@ def lcfit(lightcurves,params,fitparams,truearray,sources):
                     #     print('could not fit Type Ia')
                     #     sys.exit()
                     #fitparams[i, :] = np.array([99, 99, 99, 99])
-                    fitparams[i, :4] = np.array([0., 0., 0., 500.])
+                    fitparams[i, :4] = np.array([-999., -999., -999., -999.])
                     print('fitting failed: SN Type ',truearray[i])
                     print('-'*100)
                     #badrows.append(i)
@@ -245,13 +245,13 @@ def lcfit(lightcurves,params,fitparams,truearray,sources):
                             bmjds = mjds[bands==band]
                             try:
                                 chisq,popt = bazin.lmfit(bmjds,bflux,bfluxerr)
-                                if chisq > 500.:
-                                    chisq = 500.
+                                if chisq > 50000.:
+                                    chisq = -999.
                                 print('Source Bazin',band,'Fit Chisq',chisq,'t0',popt[0],'tau_fall',popt[1],
                                       'tau_rise',popt[2],'A',popt[3])
                             except:
                                 print('BASIN FAILED ' * 10)
-                                chisq, popt = 500.,[0,0,0,0,0]
+                                chisq, popt = -999.,[-999,-999,-999,-999,-999]
                             fitparams[i,j+input_param_index] = chisq
                             input_param_index += 1
                             fitparams[i, j+input_param_index] = popt[1]
@@ -277,8 +277,8 @@ def lcfit(lightcurves,params,fitparams,truearray,sources):
                                 print('Source',source,'Fit Chisq',res.chisq/res.ndof)
                                 fitparams[i, j+input_param_index] = res.chisq/res.ndof
                             except:
-                                print('Source', source, 'Could not Fit... Chisq', 300.)
-                                fitparams[i, j+input_param_index] = 300.
+                                print('Source', source, 'Could not Fit... Chisq', -999.)
+                                fitparams[i, j+input_param_index] = -999.
                         else:
                             try:
                                 res, fitted_model = sncosmo.fit_lc(lc, model, ['z', 't0', 'amplitude', 'delta',],
@@ -289,8 +289,8 @@ def lcfit(lightcurves,params,fitparams,truearray,sources):
                                 print('Source', source, 'Fit Chisq', res.chisq / res.ndof)
                                 fitparams[i, j + input_param_index] = res.chisq / res.ndof
                             except:
-                                print('Source', source, 'Could not Fit... Chisq', 300.)
-                                fitparams[i, j + input_param_index] = 300.
+                                print('Source', source, 'Could not Fit... Chisq', -999.)
+                                fitparams[i, j + input_param_index] = -999.
 
         print(fitparams[i,:])
         print('-' * 100)
