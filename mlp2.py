@@ -48,6 +48,10 @@ def main(save_to, num_epochs):
 
     #mnist_train = MNIST(("train",))
     #mnist_test = MNIST(("test",))
+    from fuel.datasets.hdf5 import H5PYDataset
+
+    train_set = H5PYDataset('./fueldata/ddl_sncc_known.hdf5', which_sets=('train',))
+    test_set = H5PYDataset('./fueldata/ddl_sncc_known.hdf5', which_sets=('test',))
 
     train = DataStream.default_stream(train_set,
                               iteration_scheme=SequentialScheme(700, batch_size=50))
