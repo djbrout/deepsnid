@@ -3,8 +3,8 @@
 # This script will request one GPU device and 1 CPU core
 
 #SBATCH --job-name=gpuSbatch
-#SBATCH --output=/home/djbrout/deepsnid/batchout/tanh_10k_bias.5.out
-#SBATCH --error=/home/djbrout/deepsnid/batchout/tanh_10k_bias.5.err
+#SBATCH --output=/home/djbrout/deepsnid/batchout/tanh_10k_bias.5_maxout.out
+#SBATCH --error=/home/djbrout/deepsnid/batchout/tanh_10k_bias.5_maxout.err
 #SBATCH --time=02:00:00
 #SBATCH --nodes=1
 #SBATCH --ntasks=1

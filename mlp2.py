@@ -6,7 +6,7 @@ from argparse import ArgumentParser
 from theano import tensor
 
 from blocks.algorithms import GradientDescent, Scale
-from blocks.bricks import MLP, Tanh, Softmax, Rectifier, Maxout
+from blocks.bricks import MLP, Tanh, Softmax, Rectifier, LinearMaxout
 from blocks.bricks.cost import CategoricalCrossEntropy, MisclassificationRate
 from blocks.initialization import IsotropicGaussian, Constant
 from fuel.streams import DataStream
@@ -31,7 +31,10 @@ except:
 
 
 def main(save_to, num_epochs):
-    mlp = MLP([Tanh(), Maxout() Softmax()], [64, 10000, 500, 2],
+    #maxo = LinearMaxout(input_dim=64,output_dim=10,num_pieces=2)
+    #x = tensor.matrix('features')
+    #mx = maxo.apply(x)
+    mlp = MLP([Tanh(), Softmax()], [64, 10000, 2],
               weights_init=IsotropicGaussian(0.01),
               biases_init=Constant(0.5))
     #mlp = MLP([Rectifier(), Softmax()], [64, 10000, 2],
@@ -40,7 +43,8 @@ def main(save_to, num_epochs):
     mlp.initialize()
     x = tensor.matrix('features')
     y = tensor.lmatrix('targets')
-    probs = mlp.apply(x)
+    
+    probs = mlp.apply(mx)
     cost = CategoricalCrossEntropy().apply(y.flatten(), probs)
     error_rate = MisclassificationRate().apply(y.flatten(), probs)
 
@@ -115,7 +119,7 @@ if __name__ == "__main__":
                             " the MNIST dataset.")
     parser.add_argument("--num-epochs", type=int, default=30000,
                         help="Number of training epochs to do.")
-    parser.add_argument("save_to", default="results/tanh_10k_bias.5.pkl", nargs="?",
+    parser.add_argument("save_to", default="results/tanh_10k_bias.5_maxout.pkl", nargs="?",
                         help=("Destination to save the state of the training "
                               "process."))
     args = parser.parse_args()
