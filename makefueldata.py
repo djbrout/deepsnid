@@ -66,7 +66,8 @@ for param in range(big_data_array.shape[1]):
     where = vals == -999
     big_data_array[where,param] = big_data_array[where,param]*0. + np.mean(big_data_array[~where,param])
 
-    big_data_array[:,param] = big_data_array[:,param]/np.mean(big_data_array[:,param],axis=0) 
+    big_data_array[:,param] = big_data_array[:,param]/np.mean(big_data_array[:,param],axis=0) - \
+                              np.mean(big_data_array[:,param],axis=0)
     
 print np.min(big_data_array,axis=0)
 #plot histograms
