@@ -115,7 +115,7 @@ if __name__ == "__main__":
                             " the MNIST dataset.")
     parser.add_argument("--num-epochs", type=int, default=30000,
                         help="Number of training epochs to do.")
-    parser.add_argument("save_to", default="results/tanh_10k.pkl", nargs="?",
+    parser.add_argument("save_to", default="results/tanh_10k_bias.5.pkl", nargs="?",
                         help=("Destination to save the state of the training "
                               "process."))
     args = parser.parse_args()
