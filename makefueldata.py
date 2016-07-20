@@ -1,5 +1,8 @@
 import numpy as np
 import sys
+import matplotlib as m
+m.use('Agg')
+import matplotlib.pyplot as plt
 np.set_printoptions(threshold=np.nan)
 #data1 = np.load('dldatabig_7day_bazin.npz')
 data1= np.load('lcfits/smearG10+CCx1.npz')
@@ -68,6 +71,10 @@ for param in range(big_data_array.shape[1]):
 
     big_data_array[:,param] = big_data_array[:,param]/np.mean(big_data_array[:,param],axis=0) - \
                               np.mean(big_data_array[:,param],axis=0)
+
+    plt.clf()
+    plt.hist(big_data_array[:,param],bins=50)
+    plt.savefig('paramplots/param_'+str(param)+'.png')
     
 print np.min(big_data_array,axis=0)
 #plot histograms
