@@ -31,12 +31,12 @@ except:
 
 
 def main(save_to, num_epochs):
-    # mlp = MLP([Tanh(), Softmax()], [64, 50000, 2],
-    #           weights_init=IsotropicGaussian(0.01),
-    #           biases_init=Constant(0))
-    mlp = MLP([Rectifier(), Softmax()], [64, 50000, 2],
+    mlp = MLP([Tanh(), Softmax()], [64, 10000, 2],
               weights_init=IsotropicGaussian(0.01),
               biases_init=Constant(0))
+    #mlp = MLP([Rectifier(), Softmax()], [64, 10000, 2],
+    #          weights_init=IsotropicGaussian(0.01),
+    #          biases_init=Constant(0))
     mlp.initialize()
     x = tensor.matrix('features')
     y = tensor.lmatrix('targets')
@@ -69,7 +69,7 @@ def main(save_to, num_epochs):
 
     algorithm = GradientDescent(
         cost=cost, parameters=cg.parameters,
-        step_rule=Scale(learning_rate=0.2))
+        step_rule=Scale(learning_rate=0.05))
 
     extensions = [Timing(),
                   FinishAfter(after_n_epochs=num_epochs),
@@ -115,7 +115,7 @@ if __name__ == "__main__":
                             " the MNIST dataset.")
     parser.add_argument("--num-epochs", type=int, default=30000,
                         help="Number of training epochs to do.")
-    parser.add_argument("save_to", default="results/first.pkl", nargs="?",
+    parser.add_argument("save_to", default="results/tanh_10k.pkl", nargs="?",
                         help=("Destination to save the state of the training "
                               "process."))
     args = parser.parse_args()

@@ -3,9 +3,9 @@
 # This script will request one GPU device and 1 CPU core
 
 #SBATCH --job-name=gpuSbatch
-#SBATCH --output=/home/djbrout/deepsnid/batchout/gpuSbatch.out
-#SBATCH --error=/home/djbrout/deepsnid/batchout/gpuSbatch.err
-#SBATCH --time=01:00:00
+#SBATCH --output=/home/djbrout/deepsnid/batchout/tanh_10k.out
+#SBATCH --error=/home/djbrout/deepsnid/batchout/tanh_10k.err
+#SBATCH --time=02:00:00
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --partition=gpu
