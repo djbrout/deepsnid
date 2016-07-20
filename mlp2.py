@@ -11,7 +11,6 @@ from blocks.bricks.cost import CategoricalCrossEntropy, MisclassificationRate
 from blocks.initialization import IsotropicGaussian, Constant
 from fuel.streams import DataStream
 from fuel.transformers import Flatten
-from fuel.datasets import MNIST
 from fuel.schemes import SequentialScheme
 from blocks.filter import VariableFilter
 from blocks.graph import ComputationGraph
@@ -47,8 +46,8 @@ def main(save_to, num_epochs):
     cost = cost + .00005 * (W1 ** 2).sum() + .00005 * (W2 ** 2).sum()
     cost.name = 'final_cost'
 
-    mnist_train = MNIST(("train",))
-    mnist_test = MNIST(("test",))
+    #mnist_train = MNIST(("train",))
+    #mnist_test = MNIST(("test",))
 
     train = DataStream.default_stream(train_set,
                               iteration_scheme=SequentialScheme(700, batch_size=50))
@@ -64,7 +63,7 @@ def main(save_to, num_epochs):
                       [cost, error_rate],
                       Flatten(
                           DataStream.default_stream(
-                              mnist_test,
+                              test,
                               iteration_scheme=SequentialScheme(
                                   test.num_examples, 500)),
                           which_sources=('features',)),
@@ -79,7 +78,7 @@ def main(save_to, num_epochs):
 
     if BLOCKS_EXTRAS_AVAILABLE:
         extensions.append(Plot(
-            'MNIST example',
+            'Example',
             channels=[
                 ['test_final_cost',
                  'test_misclassificationrate_apply_error_rate'],
@@ -89,7 +88,7 @@ def main(save_to, num_epochs):
         algorithm,
         Flatten(
             DataStream.default_stream(
-                mnist_train,
+                train,
                 iteration_scheme=SequentialScheme(
                     train.num_examples, 50)),
             which_sources=('features',)),
