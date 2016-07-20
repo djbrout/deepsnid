@@ -33,7 +33,7 @@ except:
 def main(save_to, num_epochs):
     mlp = MLP([Tanh(), Softmax()], [64, 10000, 2],
               weights_init=IsotropicGaussian(0.01),
-              biases_init=Constant(0))
+              biases_init=Constant(0.5))
     #mlp = MLP([Rectifier(), Softmax()], [64, 10000, 2],
     #          weights_init=IsotropicGaussian(0.01),
     #          biases_init=Constant(0))
