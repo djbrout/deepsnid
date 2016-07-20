@@ -79,8 +79,8 @@ for param in range(big_data_array.shape[1]):
     big_data_array[ww , param] = np.mean(big_data_array[~ww,param])
 
     if param > 2:
-        big_data_array[:, param] = big_data_array[:,param] + np.min(big_data_array[:,param])
-
+        big_data_array[:, param] = big_data_array[:,param] - np.min(big_data_array[:,param])
+        big_data_array[:, param] = 1./big_data_array[:, param]
     plt.clf()
     plt.hist(big_data_array[:,param],bins=50)
     plt.savefig('paramplots/param_'+str(param)+'.png')
