@@ -52,11 +52,17 @@ def main(save_to, num_epochs):
 
     train_set = H5PYDataset('./fueldata/ddl_smearG10+CCx1.hdf5', which_sets=('train',))
     test_set = H5PYDataset('./fueldata/ddl_smearG10+CCx1.hdf5', which_sets=('test',))
+    test_iaset = H5PYDataset('./fueldata/ddl_smearG10+CCx1.hdf5', which_sets=('ia',))
+    test_niaset = H5PYDataset('./fueldata/ddl_smearG10+CCx1.hdf5', which_sets=('nia',))
 
     train = DataStream.default_stream(train_set,
                               iteration_scheme=SequentialScheme(602, batch_size=50))
     test = DataStream.default_stream(test_set,
                               iteration_scheme=SequentialScheme(829, batch_size=50))
+    testia = DataStream.default_stream(test_iaset,
+                              iteration_scheme=SequentialScheme(602, batch_size=50))
+    testnia = DataStream.default_stream(test_niaset,
+                              iteration_scheme=SequentialScheme(602, batch_size=50))
 
     algorithm = GradientDescent(
         cost=cost, parameters=cg.parameters,
