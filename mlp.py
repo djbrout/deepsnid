@@ -1,5 +1,6 @@
 from theano import tensor
 import numpy as np
+import theano
 from time import time
 
 x = tensor.matrix('features')
@@ -105,7 +106,7 @@ t1 = time()
 dobokeh = False
 if not dobokeh:
     main_loop = MainLoop(data_stream=data_stream, algorithm=algorithm,
-                     extensions=[monitor,monitor2,monitor3,monitor4, FinishAfter(after_n_epochs=5000), Printing()])
+                     extensions=[monitor,monitor2,monitor3,monitor4, FinishAfter(after_n_epochs=10), Printing()])
 else:    # bokeh-server
     main_loop = MainLoop(data_stream=data_stream, algorithm=algorithm,
                      extensions=[FinishAfter(after_n_epochs=20000), TrainingDataMonitoring([cost,error_rate], after_batch=True),
@@ -114,7 +115,9 @@ else:    # bokeh-server
 main_loop.run()
 t2=time()
 print 'Total runtime for 500 iter',t2-t1
-np.savez('/home/djbrout/deepsnid/results/sncc_results.npz',main_loop=main_loop)
+f = theano.function(inputs=[x], outputs=y_hat)
+
+np.savez('results/smearG10+CCx1_results.npz',main_loop=main_loop,func=f)
 #dlplots.hinton(W1.eval())
 #plt.savefig('W1_after.png')
 
