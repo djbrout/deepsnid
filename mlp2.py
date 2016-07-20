@@ -31,7 +31,7 @@ except:
 
 
 def main(save_to, num_epochs):
-    mlp = MLP([Tanh(), Softmax()], [59, 5000, 2],
+    mlp = MLP([Tanh(), Softmax()], [64, 50000, 2],
               weights_init=IsotropicGaussian(0.01),
               biases_init=Constant(0))
     mlp.initialize()
@@ -110,7 +110,7 @@ if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
     parser = ArgumentParser("An example of training an MLP on"
                             " the MNIST dataset.")
-    parser.add_argument("--num-epochs", type=int, default=30000,
+    parser.add_argument("--num-epochs", type=int, default=200,
                         help="Number of training epochs to do.")
     parser.add_argument("save_to", default="results/first.pkl", nargs="?",
                         help=("Destination to save the state of the training "

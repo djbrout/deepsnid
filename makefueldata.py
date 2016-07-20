@@ -21,7 +21,7 @@ big_data_array[:,:3] = big_data_array[:,:3]/np.max(big_data_array[:,:3],axis=0)
 
 print big_data_array.shape
 
-big_data_array = np.delete(big_data_array,[4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,80,81,82,83,84],axis=1)
+big_data_array = np.delete(big_data_array,[4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25],axis=1)
 print big_data_array.shape
 #raw_input()
 #print np.min(big_data_array,axis=0)
