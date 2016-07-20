@@ -24,40 +24,55 @@ big_data_array[:,:3] = big_data_array[:,:3]/np.max(big_data_array[:,:3],axis=0)
 
 print big_data_array.shape
 
-big_data_array = np.delete(big_data_array,[4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25],axis=1)
+#big_data_array = np.delete(big_data_array,[4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25],axis=1)
 print big_data_array.shape
 #raw_input()
 #print np.min(big_data_array,axis=0)
+print len(truetypes)
+print len(truetypes[truetypes==0])
+print 'num non ia', len(truetypes[truetypes==1])
+raw_input()
+equal_parts = False
+if equal_parts:
+    
+    numex = 300
 
-numex = 300
-
-iac = 0
-niac = 0
-ia_train_index = []
-nia_train_index = []
-ia_test_index = []
-nia_test_index = []
-index = -1
-for sn in truetypes:
-    index += 1
-    if iac > numex:
-        ia_test_index.append(index)
-    elif sn == 0:
-        iac += 1
-        ia_train_index.append(index)
+    iac = 0
+    niac = 0
+    ia_train_index = []
+    nia_train_index = []
+    ia_test_index = []
+    nia_test_index = []
+    index = -1
+    for sn in truetypes:
+        index += 1
+        if iac > numex:
+            ia_test_index.append(index)
+        elif sn == 0:
+            iac += 1
+            ia_train_index.append(index)
         
-index =-1
-for sn in truetypes:
-    index += 1
-    if niac > numex:
-        nia_test_index.append(index)
-    elif sn != 0:
-        #print index
-        #print nia_train_index
-        niac += 1
-        nia_train_index.append(index)
-print ia_train_index
+    index =-1
+    for sn in truetypes:
+        index += 1
+        if niac > numex:
+            nia_test_index.append(index)
+        elif sn != 0:
+            #print index
+            #print nia_train_index
+            niac += 1
+            nia_train_index.append(index)
 
+
+else:
+
+    numex = 700
+    ia_train_index = range(numex/2)
+    nia_train_index = range(numex/2,numex)
+    testex = len(truetypes) - numex
+    ia_test_index = range(numex, numex + testex/2)
+    nia_test_index = range(numex + testex/2, numex + testex) 
+    
 #ia_train_index = np.array(ia_train_index)
 #nia_train_index = np.array(nia_train_index)
 #ia_test_index = np.array(ia_test_index)
@@ -79,9 +94,12 @@ for param in range(big_data_array.shape[1]):
     big_data_array[ww , param] = np.mean(big_data_array[~ww,param])
 
     big_data_array[:, param] = big_data_array[:, param] - np.mean(big_data_array[:, param], axis=0)
-    if param > 2:
+    if param > 25:
         big_data_array[:, param] = big_data_array[:,param] - np.min(big_data_array[:,param]) + .1
         big_data_array[:, param] = 1./big_data_array[:, param]/10.
+    elif param in [9,14,19,24]:
+        big_data_array[:, param] = big_data_array[:,param] - np.min(big_data_array[:,param]) + .1
+        big_data_array[:, param] = 1./big_data_array[:, param]/10.        
     else:
         big_data_array[:, param] = big_data_array[:, param]/np.std(big_data_array[:,param])
     plt.clf()

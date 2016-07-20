@@ -34,9 +34,9 @@ def main(save_to, num_epochs):
     #maxo = LinearMaxout(input_dim=64,output_dim=10,num_pieces=2)
     #x = tensor.matrix('features')
     #mx = maxo.apply(x)
-    mlp = MLP([Tanh(), Softmax()], [64, 10000, 2],
+    mlp = MLP([Tanh(), Softmax()], [86, 10000, 2],
               weights_init=IsotropicGaussian(0.01),
-              biases_init=Constant(0.5))
+              biases_init=Constant(0))
     #mlp = MLP([Rectifier(), Softmax()], [64, 10000, 2],
     #          weights_init=IsotropicGaussian(0.01),
     #          biases_init=Constant(0))
@@ -44,7 +44,7 @@ def main(save_to, num_epochs):
     x = tensor.matrix('features')
     y = tensor.lmatrix('targets')
     
-    probs = mlp.apply(mx)
+    probs = mlp.apply(x)
     cost = CategoricalCrossEntropy().apply(y.flatten(), probs)
     error_rate = MisclassificationRate().apply(y.flatten(), probs)
 
@@ -63,17 +63,17 @@ def main(save_to, num_epochs):
     test_niaset = H5PYDataset('./fueldata/ddl_smearG10+CCx1.hdf5', which_sets=('test_nonia',))
 
     train = DataStream.default_stream(train_set,
-                              iteration_scheme=SequentialScheme(602, batch_size=50))
+                              iteration_scheme=SequentialScheme(700, batch_size=50))
     test = DataStream.default_stream(test_set,
-                              iteration_scheme=SequentialScheme(829, batch_size=50))
+                              iteration_scheme=SequentialScheme(396, batch_size=50))
     testia = DataStream.default_stream(test_iaset,
-                              iteration_scheme=SequentialScheme(549, batch_size=50))
+                              iteration_scheme=SequentialScheme(263, batch_size=50))
     testnia = DataStream.default_stream(test_niaset,
-                              iteration_scheme=SequentialScheme(280, batch_size=50))
+                              iteration_scheme=SequentialScheme(133, batch_size=50))
 
     algorithm = GradientDescent(
         cost=cost, parameters=cg.parameters,
-        step_rule=Scale(learning_rate=0.05))
+        step_rule=Scale(learning_rate=0.1))
 
     extensions = [Timing(),
                   FinishAfter(after_n_epochs=num_epochs),
@@ -117,9 +117,9 @@ if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
     parser = ArgumentParser("An example of training an MLP on"
                             " the MNIST dataset.")
-    parser.add_argument("--num-epochs", type=int, default=30000,
+    parser.add_argument("--num-epochs", type=int, default=15000,
                         help="Number of training epochs to do.")
-    parser.add_argument("save_to", default="results/tanh_10k_bias.5_maxout.pkl", nargs="?",
+    parser.add_argument("save_to", default="results/tanh_10k.pkl", nargs="?",
                         help=("Destination to save the state of the training "
                               "process."))
     args = parser.parse_args()
