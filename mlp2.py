@@ -60,19 +60,28 @@ def main(save_to, num_epochs):
     test = DataStream.default_stream(test_set,
                               iteration_scheme=SequentialScheme(829, batch_size=50))
     testia = DataStream.default_stream(test_iaset,
-                              iteration_scheme=SequentialScheme(602, batch_size=50))
+                              iteration_scheme=SequentialScheme(549, batch_size=50))
     testnia = DataStream.default_stream(test_niaset,
-                              iteration_scheme=SequentialScheme(602, batch_size=50))
+                              iteration_scheme=SequentialScheme(280, batch_size=50))
 
     algorithm = GradientDescent(
         cost=cost, parameters=cg.parameters,
         step_rule=Scale(learning_rate=0.1))
+
     extensions = [Timing(),
                   FinishAfter(after_n_epochs=num_epochs),
                   DataStreamMonitoring(
                       [cost, error_rate],
                       Flatten(test),
                       prefix="test"),
+                  DataStreamMonitoring(
+                      [cost, error_rate],
+                      Flatten(testia),
+                      prefix="Ia Purity"),
+                  DataStreamMonitoring(
+                      [cost, error_rate],
+                      Flatten(testnia),
+                      prefix="CC Purtiy"),
                   TrainingDataMonitoring(
                       [cost, error_rate,
                        aggregation.mean(algorithm.total_gradient_norm)],
