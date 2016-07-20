@@ -75,6 +75,8 @@ for param in range(big_data_array.shape[1]):
     big_data_array[:,param] = big_data_array[:,param] - np.mean(big_data_array[:,param],axis=0)
     big_data_array[:, param] = big_data_array[:,param]/np.std(big_data_array[:,param])
 
+    ww = np.abs(big_data_array[:,param]) > 3*np.std(big_data_array[:,param])
+    big_data_array[ww , param] = np.mean(big_data_array[~ww,param])
 
     plt.clf()
     plt.hist(big_data_array[:,param],bins=50)
