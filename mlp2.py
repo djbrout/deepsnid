@@ -52,8 +52,8 @@ def main(save_to, num_epochs):
 
     train_set = H5PYDataset('./fueldata/ddl_smearG10+CCx1.hdf5', which_sets=('train',))
     test_set = H5PYDataset('./fueldata/ddl_smearG10+CCx1.hdf5', which_sets=('test',))
-    test_iaset = H5PYDataset('./fueldata/ddl_smearG10+CCx1.hdf5', which_sets=('ia',))
-    test_niaset = H5PYDataset('./fueldata/ddl_smearG10+CCx1.hdf5', which_sets=('nia',))
+    test_iaset = H5PYDataset('./fueldata/ddl_smearG10+CCx1.hdf5', which_sets=('test_ia',))
+    test_niaset = H5PYDataset('./fueldata/ddl_smearG10+CCx1.hdf5', which_sets=('test_nonia',))
 
     train = DataStream.default_stream(train_set,
                               iteration_scheme=SequentialScheme(602, batch_size=50))
