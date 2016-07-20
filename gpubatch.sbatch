@@ -22,4 +22,4 @@ module load cuda
 #
 # your GPU-based executable here
 #
-THEANO_FLAGS=mode=FAST_RUN,device=gpu,floatX=float32 python mlp.py
+THEANO_FLAGS=mode=FAST_RUN,device=gpu,floatX=float32 python mlp2.py

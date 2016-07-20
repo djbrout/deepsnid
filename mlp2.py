@@ -31,7 +31,7 @@ except:
 
 
 def main(save_to, num_epochs):
-    mlp = MLP([Tanh(), Softmax()], [86, 100, 2],
+    mlp = MLP([Tanh(), Softmax()], [59, 5000, 2],
               weights_init=IsotropicGaussian(0.01),
               biases_init=Constant(0))
     mlp.initialize()
@@ -50,13 +50,13 @@ def main(save_to, num_epochs):
     #mnist_test = MNIST(("test",))
     from fuel.datasets.hdf5 import H5PYDataset
 
-    train_set = H5PYDataset('./fueldata/ddl_sncc_known.hdf5', which_sets=('train',))
-    test_set = H5PYDataset('./fueldata/ddl_sncc_known.hdf5', which_sets=('test',))
+    train_set = H5PYDataset('./fueldata/ddl_smearG10+CCx1.hdf5', which_sets=('train',))
+    test_set = H5PYDataset('./fueldata/ddl_smearG10+CCx1.hdf5', which_sets=('test',))
 
     train = DataStream.default_stream(train_set,
                               iteration_scheme=SequentialScheme(602, batch_size=50))
     test = DataStream.default_stream(test_set,
-                              iteration_scheme=SequentialScheme(556, batch_size=50))
+                              iteration_scheme=SequentialScheme(829, batch_size=50))
 
     algorithm = GradientDescent(
         cost=cost, parameters=cg.parameters,
@@ -65,12 +65,7 @@ def main(save_to, num_epochs):
                   FinishAfter(after_n_epochs=num_epochs),
                   DataStreamMonitoring(
                       [cost, error_rate],
-                      Flatten(
-                          DataStream.default_stream(
-                              test,
-                              iteration_scheme=SequentialScheme(
-                                  556, 500)),
-                          which_sources=('features',)),
+                      Flatten(test),
                       prefix="test"),
                   TrainingDataMonitoring(
                       [cost, error_rate,
@@ -80,22 +75,17 @@ def main(save_to, num_epochs):
                   Checkpoint(save_to),
                   Printing()]
 
-    if BLOCKS_EXTRAS_AVAILABLE:
+    '''if BLOCKS_EXTRAS_AVAILABLE:
         extensions.append(Plot(
             'Example',
             channels=[
                 ['test_final_cost',
                  'test_misclassificationrate_apply_error_rate'],
                 ['train_total_gradient_norm']]))
-
+    '''
     main_loop = MainLoop(
         algorithm,
-        Flatten(
-            DataStream.default_stream(
-                train,
-                iteration_scheme=SequentialScheme(
-                    602, 50)),
-            which_sources=('features',)),
+        Flatten(train),
         model=Model(cost),
         extensions=extensions)
 
@@ -105,7 +95,7 @@ if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
     parser = ArgumentParser("An example of training an MLP on"
                             " the MNIST dataset.")
-    parser.add_argument("--num-epochs", type=int, default=2,
+    parser.add_argument("--num-epochs", type=int, default=30000,
                         help="Number of training epochs to do.")
     parser.add_argument("save_to", default="results/first.pkl", nargs="?",
                         help=("Destination to save the state of the training "

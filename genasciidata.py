@@ -41,7 +41,7 @@ def grabdata(loc,list,simname='test'):
     sntypes = []
     params = []
 
-    max = 20000
+    max = 20
     cntr = 0
     
     for file in files:
@@ -149,7 +149,7 @@ def grabdata(loc,list,simname='test'):
     fitparams, truetypes = lcfit(knownlightcurves, knownparams, fitparams, knowntypes, sources)
     print('fitparams.shape', fitparams.shape)
     print('truetypes.shape', truetypes.shape)
-    np.savez('./lcfits/'+simname+'.npz', big_data_array=fitparams, truetypes=truetypes, params=knownparams)
+    np.savez('/project/rkessler/djbrout/deepsnid/lcfits/'+simname+'.npz', big_data_array=fitparams, truetypes=truetypes, params=knownparams)
     print('saved lcfits/'+simname+'.npz')
     return
 

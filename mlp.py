@@ -5,8 +5,8 @@ from time import time
 
 x = tensor.matrix('features')
 
-num_hidden_nodes = 50000
-input_dim = 70
+num_hidden_nodes = 100
+input_dim = 86
 
 from blocks.bricks import Linear, Rectifier, Softmax
 input_to_hidden = Linear(name='input_to_hidden',
@@ -26,7 +26,7 @@ from blocks.graph import ComputationGraph
 from blocks.filter import VariableFilter
 cg = ComputationGraph(cost)
 W1, W2 = VariableFilter(roles=[WEIGHT])(cg.variables)
-L1,L2 = 0.05, 0.05
+L1,L2 = 0.005, 0.005
 cost = cost + L1 * (W1 ** 2).sum() + L2 * (W2 ** 2).sum()
 cost.name = 'cost_with_regularization'
 
@@ -51,27 +51,27 @@ from fuel.transformers import Flatten
 
 
 from fuel.datasets.hdf5 import H5PYDataset
-train_set = H5PYDataset('./fueldata/ddl_sncc_known.hdf5', which_sets=('train',))
-test_set = H5PYDataset('./fueldata/ddl_sncc_known.hdf5', which_sets=('test',))
-testia_set = H5PYDataset('./fueldata/ddl_sncc_known.hdf5', which_sets=('test_ia',))
-testnonia_set = H5PYDataset('./fueldata/ddl_sncc_known.hdf5', which_sets=('test_nonia',))
+train_set = H5PYDataset('./fueldata/ddl_smearG10+CCx1.hdf5', which_sets=('train',))
+test_set = H5PYDataset('./fueldata/ddl_smearG10+CCx1.hdf5', which_sets=('test',))
+testia_set = H5PYDataset('./fueldata/ddl_smearG10+CCx1.hdf5', which_sets=('test_ia',))
+testnonia_set = H5PYDataset('./fueldata/ddl_smearG10+CCx1.hdf5', which_sets=('test_nonia',))
 
 data_stream = Flatten(DataStream.default_stream(train_set,
-                                                iteration_scheme=SequentialScheme(700, batch_size=50)))
+                                                iteration_scheme=SequentialScheme(602, batch_size=50)))
 data_stream_test = Flatten(DataStream.default_stream(test_set,
-                                                iteration_scheme=SequentialScheme(556, batch_size=50)))
+                                                iteration_scheme=SequentialScheme(829, batch_size=50)))
 
 # #MAKE A DATASTREAM OF ONLY Ias FOR EFFIC CALC
 data_stream_testia = Flatten(DataStream.default_stream(testia_set,
-                                                      iteration_scheme=SequentialScheme(383, batch_size=50)))
+                                                      iteration_scheme=SequentialScheme(549, batch_size=50)))
 #
 #MAKE A DATASTREAM OF ONLY CC FOR PURITY CALC
 data_stream_testnonia = Flatten(DataStream.default_stream(testnonia_set,
-                                                        iteration_scheme=SequentialScheme(173, batch_size=50)))
+                                                        iteration_scheme=SequentialScheme(280, batch_size=50)))
 
 from blocks.algorithms import GradientDescent, Scale
 algorithm = GradientDescent(cost=cost, parameters=cg.parameters,
-                             step_rule=Scale(learning_rate=0.0001))
+                             step_rule=Scale(learning_rate=0.00005))
 
 
 probs = hidden_to_output.apply(input_to_hidden.apply(x))
@@ -88,7 +88,7 @@ from blocks.extensions.monitoring import TrainingDataMonitoring
 monitor = DataStreamMonitoring(variables=[cost, error_rate], data_stream=data_stream_test, prefix="test")
 monitor2 = DataStreamMonitoring(variables=[error_rate], data_stream=data_stream_testnonia, prefix="nonia")
 monitor3 = DataStreamMonitoring(variables=[error_rate], data_stream=data_stream_testia, prefix="ia")
-monitor4 = TrainingDataMonitoring([error_rate], after_batch=True,prefix='train')
+monitor4 = TrainingDataMonitoring([cost,error_rate], after_batch=True,prefix='train')
 
 
 import dlplots
@@ -106,7 +106,7 @@ t1 = time()
 dobokeh = False
 if not dobokeh:
     main_loop = MainLoop(data_stream=data_stream, algorithm=algorithm,
-                     extensions=[monitor,monitor2,monitor3,monitor4, FinishAfter(after_n_epochs=10), Printing()])
+                     extensions=[monitor,monitor2,monitor3,monitor4, FinishAfter(after_n_epochs=1000), Printing()])
 else:    # bokeh-server
     main_loop = MainLoop(data_stream=data_stream, algorithm=algorithm,
                      extensions=[FinishAfter(after_n_epochs=20000), TrainingDataMonitoring([cost,error_rate], after_batch=True),
