@@ -54,7 +54,7 @@ def main(save_to, num_epochs):
     test_set = H5PYDataset('./fueldata/ddl_sncc_known.hdf5', which_sets=('test',))
 
     train = DataStream.default_stream(train_set,
-                              iteration_scheme=SequentialScheme(700, batch_size=50))
+                              iteration_scheme=SequentialScheme(602, batch_size=50))
     test = DataStream.default_stream(test_set,
                               iteration_scheme=SequentialScheme(556, batch_size=50))
 
@@ -69,7 +69,7 @@ def main(save_to, num_epochs):
                           DataStream.default_stream(
                               test,
                               iteration_scheme=SequentialScheme(
-                                  test.num_examples, 500)),
+                                  556, 500)),
                           which_sources=('features',)),
                       prefix="test"),
                   TrainingDataMonitoring(
@@ -94,7 +94,7 @@ def main(save_to, num_epochs):
             DataStream.default_stream(
                 train,
                 iteration_scheme=SequentialScheme(
-                    train.num_examples, 50)),
+                    602, 50)),
             which_sources=('features',)),
         model=Model(cost),
         extensions=extensions)
